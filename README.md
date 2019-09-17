@@ -1,4 +1,4 @@
-This code is based on [https://github.com/cbfinn/gps](https://github.com/cbfinn/gps), and modified to be compatible with tensorflow 1.3.0
+This code is based on [https://github.com/cbfinn/gps](https://github.com/cbfinn/gps), and modified to be compatible with tensorflow 1.3.0 and MujocoPro131
 
 ======
 
