@@ -13,7 +13,7 @@ cmake_install.cmake
 
 #ROS
 build/
-bin/
+#bin/
 lib/
 msg_gen/
 srv_gen/
