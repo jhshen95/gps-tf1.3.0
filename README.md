@@ -1,4 +1,6 @@
-This code is based on [https://github.com/cbfinn/gps](https://github.com/cbfinn/gps), and modified to be compatible with tensorflow 1.3.0 and MujocoPro131
+This code is based on [https://github.com/cbfinn/gps](https://github.com/cbfinn/gps), and modified to be compatible with tensorflow 1.3.0 and MujocoPro131. Please follow [http://rll.berkeley.edu/gps/#installation](http://rll.berkeley.edu/gps/#installation) to install necessary dependencies and compile protobuffer.
+
+The MujocoPro131 has already been in src/3rdparty/mjpro. It requires a license, please obtain a key which should be named mjkey.txt and place the key into the mjpro directory.
 
 ======
 
