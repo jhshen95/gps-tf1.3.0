@@ -20,7 +20,7 @@ class TfPolicy(Policy):
         sess: tf session.
         device_string: tf device string for running on either gpu or cpu.
     """
-    def __init__(self, dU, obs_tensor, act_op, feat_op, var, sess, device_string, copy_param_scope=None):
+    def __init__(self, dU, obs_tensor, act_op, feat_op, var, sess, device_string, copy_param_scope=None, policy_type=None):
         Policy.__init__(self)
         self.dU = dU
         self.obs_tensor = obs_tensor
@@ -32,6 +32,7 @@ class TfPolicy(Policy):
         self.scale = None  # must be set from elsewhere based on observations
         self.bias = None
         self.x_idx = None
+        self.policy_type = policy_type
 
         if copy_param_scope:
             self.copy_params = tf.get_collection(tf.GraphKeys.VARIABLES, scope=copy_param_scope)
@@ -57,7 +58,13 @@ class TfPolicy(Policy):
             obs = np.expand_dims(obs, axis=0)
         obs[:, self.x_idx] = obs[:, self.x_idx].dot(self.scale) + self.bias
         with tf.device(self.device_string):
-            action_mean = self.sess.run(self.act_op, feed_dict={self.obs_tensor: obs})
+            if self.policy_type=="gmm":
+                #STODO: can we sample in batch?
+                action_weight, action_mean = self.sess.run(self.act_op, feed_dict={self.obs_tensor: obs})
+                sample_comp = np.random.choice(action_weight.shape[1], p=action_weight[0])
+                action_mean = action_mean[:, sample_comp]
+            else:                
+                action_mean = self.sess.run(self.act_op, feed_dict={self.obs_tensor: obs})
         if noise is None:
             u = action_mean
         else:

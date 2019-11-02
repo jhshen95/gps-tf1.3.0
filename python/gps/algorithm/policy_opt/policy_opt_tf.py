@@ -49,7 +49,7 @@ class PolicyOptTf(PolicyOpt):
         self.var = self._hyperparams['init_var'] * np.ones(dU)
         self.sess = tf.Session()
         self.policy = TfPolicy(dU, self.obs_tensor, self.act_op, self.feat_op,
-                               np.zeros(dU), self.sess, self.device_string, copy_param_scope=self._hyperparams['copy_param_scope'])
+                               np.zeros(dU), self.sess, self.device_string, copy_param_scope=self._hyperparams['copy_param_scope'], policy_type=self.policy_type)
         # List of indices for state (vector) data and image (tensor) data in observation.
         self.x_idx, self.img_idx, i = [], [], 0
         if 'obs_image_data' not in self._hyperparams['network_params']:
@@ -72,6 +72,7 @@ class PolicyOptTf(PolicyOpt):
         self.obs_tensor = tf_map.get_input_tensor()
         self.precision_tensor = tf_map.get_precision_tensor()
         self.action_tensor = tf_map.get_target_output_tensor()
+        self.policy_type = tf_map.get_policy_type()
         self.act_op = tf_map.get_output_op()
         self.feat_op = tf_map.get_feature_op()
         self.loss_scalar = tf_map.get_loss_op()
@@ -79,8 +80,9 @@ class PolicyOptTf(PolicyOpt):
         self.last_conv_vars = last_conv_vars
 
         # Setup the gradients
-        self.grads = [tf.gradients(self.act_op[:,u], self.obs_tensor)[0]
-                for u in range(self._dU)]
+        # SJHTODO: What's this for?
+        #self.grads = [tf.gradients(self.act_op[:,u], self.obs_tensor)[0]
+        #        for u in range(self._dU)]
 
     def init_solver(self):
         """ Helper method to initialize the solver. """
@@ -224,12 +226,19 @@ class PolicyOptTf(PolicyOpt):
 
         output = np.zeros((N, T, dU))
 
+        #SJHTODO:can we sample in batch?
         for i in range(N):
             for t in range(T):
                 # Feed in data.
                 feed_dict = {self.obs_tensor: np.expand_dims(obs[i, t], axis=0)}
                 with tf.device(self.device_string):
-                    output[i, t, :] = self.sess.run(self.act_op, feed_dict=feed_dict)
+                    if self.policy_type=="gmm":
+                        #STODO: which way to linearize the policy? average mean or sample mean
+                        weight, mean = self.sess.run(self.act_op, feed_dict=feed_dict)
+                        sample_comp = np.random.choice(weight.shape[1], p=weight[0])
+                        output[i, t, :] = mean[0, sample_comp]                        
+                    else:
+                        output[i, t, :] = self.sess.run(self.act_op, feed_dict=feed_dict)
 
         pol_sigma = np.tile(np.diag(self.var), [N, T, 1, 1])
         pol_prec = np.tile(np.diag(1.0 / self.var), [N, T, 1, 1])
