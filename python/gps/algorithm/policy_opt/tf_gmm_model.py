@@ -49,7 +49,7 @@ def get_gmm_coef(output, dim_output, n_comp):
     pre = tf.exp(pre)
     return weight, mean, pre
 
-def tf_gmm_network(dim_input=27, dim_output=7, batch_size=25, n_comp=8, network_config=None):
+def tf_gmm_network(dim_input=27, dim_output=7, batch_size=25, n_comp=3, network_config=None):
     n_layers = 2 if 'n_layers' not in network_config else network_config['n_layers'] + 1
     dim_hidden = (n_layers - 1) * [40] if 'dim_hidden' not in network_config else network_config['dim_hidden']
     #for each component, outputs weight(dim 1), mean(dim_output) and diag_covar (dim_output)

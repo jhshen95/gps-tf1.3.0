@@ -1,12 +1,10 @@
 import tensorflow as tf
 import numpy as np
 
-
 def check_list_and_convert(the_object):
     if isinstance(the_object, list):
         return the_object
     return [the_object]
-
 
 class TfMap:
     """ a container for inputs, outputs, and loss in a tf graph. This object exists only
@@ -25,6 +23,10 @@ class TfMap:
             self.weight_op = output_op[0]
             self.mean_op = output_op[1]
             self.pre_op = output_op[2]
+        elif policy_type=="vae":
+            self.output_op = output_op
+            self.mean_op = output_op[0]
+            self.sigma_op = output_op[1]
         else:
             self.output_op = output_op[0]
         self.loss_op = loss_op
@@ -72,6 +74,8 @@ class TfMap:
     def get_output_op(self):
         if self.policy_type=="gmm":
             return [self.weight_op, self.mean_op]
+        if self.policy_type=="vae":
+            return self.mean_op
         return self.output_op
 
     def get_feature_op(self):

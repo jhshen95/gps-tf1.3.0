@@ -161,9 +161,13 @@ class PolicyOptTf(PolicyOpt):
                 start_idx = int(i * self.batch_size %
                                 (batches_per_epoch * self.batch_size))
                 idx_i = idx[start_idx:start_idx+self.batch_size]
-                feed_dict = {self.last_conv_vars: conv_values[idx_i],
-                             self.action_tensor: tgt_mu[idx_i],
-                             self.precision_tensor: tgt_prc[idx_i]}
+                if self.policy_type=="vae":
+                    feed_dict = {self.last_conv_vars: conv_values[idx_i],
+                                self.action_tensor: tgt_mu[idx_i]}                    
+                else:
+                    feed_dict = {self.last_conv_vars: conv_values[idx_i],
+                                self.action_tensor: tgt_mu[idx_i],
+                                self.precision_tensor: tgt_prc[idx_i]}
                 train_loss = self.solver(feed_dict, self.sess, device_string=self.device_string, use_fc_solver=True)
                 average_loss += train_loss
 
@@ -179,7 +183,11 @@ class PolicyOptTf(PolicyOpt):
             start_idx = int(i * self.batch_size %
                             (batches_per_epoch * self.batch_size))
             idx_i = idx[start_idx:start_idx+self.batch_size]
-            feed_dict = {self.obs_tensor: obs[idx_i],
+            if self.policy_type=="vae":
+                feed_dict = {self.obs_tensor: obs[idx_i],
+                         self.action_tensor: tgt_mu[idx_i]}                
+            else:
+                feed_dict = {self.obs_tensor: obs[idx_i],
                          self.action_tensor: tgt_mu[idx_i],
                          self.precision_tensor: tgt_prc[idx_i]}
             train_loss = self.solver(feed_dict, self.sess, device_string=self.device_string)
