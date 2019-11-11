@@ -88,7 +88,7 @@ def priori_network(state_input, dim_output=7, network_config=None):
 
     mlp_applied, weights_FC, biases_FC = get_mlp_layers(state_input, n_layers, dim_hidden, 'priori_')
     mean = mlp_applied[:, :dim_output]
-    sigma = tf.exp(mlp_applied[:, dim_output:])
+    sigma = 1.001 + tf.nn.elu(mlp_applied[:, dim_output:] - 1)
     fc_vars = weights_FC + biases_FC
 
     return mean, sigma, fc_vars  
@@ -106,7 +106,7 @@ def encoder_network(state_input, action_input, dim_output=7, network_config=None
     nn_input = tf.concat([state_input, action_input], axis=1)
     mlp_applied, weights_FC, biases_FC = get_mlp_layers(nn_input, n_layers, dim_hidden, 'encoder_')
     mean = mlp_applied[:, :dim_output]
-    sigma = tf.exp(mlp_applied[:, dim_output:])
+    sigma = 1.001 + tf.nn.elu(mlp_applied[:, dim_output:] - 1)
     fc_vars = weights_FC + biases_FC
 
     return mean, sigma, fc_vars
@@ -135,10 +135,10 @@ def decoder_network(state_input, latent_mean, latent_sigma, priori_mean, priori_
         get_decoder_mlp_layers(decoder_input, policy_input, n_layers, dim_hidden, 'decoder_')
 
     decoder_mean = decoder_mlp_applied[:, :dim_output]
-    decoder_sigma = tf.exp(decoder_mlp_applied[:, dim_output:])
+    decoder_sigma = 1.001 + tf.nn.elu(decoder_mlp_applied[:, dim_output:] - 1)
 
     policy_mean = policy_mlp_applied[:, :dim_output]
-    policy_sigma = policy_mlp_applied[:, dim_output:]
+    policy_sigma = 1.001 + tf.nn.elu(policy_mlp_applied[:, dim_output:] - 1)
 
     fc_vars = weights_FC + biases_FC
     return decoder_mean, decoder_sigma, policy_mean, policy_sigma, fc_vars

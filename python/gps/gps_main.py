@@ -1,5 +1,6 @@
 """ This file defines the main object that runs experiments. """
-
+import os
+os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 import matplotlib as mpl
 mpl.use('Qt4Agg')
 

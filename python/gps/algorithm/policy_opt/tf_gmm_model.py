@@ -46,7 +46,7 @@ def get_gmm_coef(output, dim_output, n_comp):
     #normalize weight
     weight = tf.nn.softmax(weight)
     #pre should be positive
-    pre = tf.exp(pre)
+    pre = 1.001 + tf.nn.elu(pre - 1)
     return weight, mean, pre
 
 def tf_gmm_network(dim_input=27, dim_output=7, batch_size=25, n_comp=3, network_config=None):
