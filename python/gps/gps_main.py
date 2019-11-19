@@ -1,5 +1,6 @@
 """ This file defines the main object that runs experiments. """
-
+import os
+os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 import matplotlib as mpl
 mpl.use('Qt4Agg')
 
@@ -17,6 +18,7 @@ import traceback
 # Add gps/python to path so that imports work.
 sys.path.append('/'.join(str.split(__file__, '/')[:-2]))
 from gps.gui.gps_training_gui import GPSTrainingGUI
+from gps.gui.output_logger import GPSOutputLogger
 from gps.utility.data_logger import DataLogger
 from gps.sample.sample_list import SampleList
 
@@ -47,6 +49,9 @@ class GPSMain(object):
         self.agent = config['agent']['type'](config['agent'])
         self.data_logger = DataLogger()
         self.gui = GPSTrainingGUI(config['common']) if config['gui_on'] else None
+        if not config['gui_on']:
+            #use output logger if gui is off
+            self.output_logger = GPSOutputLogger(config['common'])
 
         config['algorithm']['agent'] = self.agent
         self.algorithm = config['algorithm']['type'](config['algorithm'])
@@ -253,6 +258,8 @@ class GPSMain(object):
             self.gui.save_figure(
                 self._data_files_dir + ('figure_itr_%02d.png' % itr)
             )
+        else:
+            self.output_logger.update(itr, self.algorithm, pol_sample_lists)
         if 'no_sample_logging' in self._hyperparams['common']:
             return
         self.data_logger.pickle(

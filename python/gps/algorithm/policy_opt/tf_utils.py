@@ -1,34 +1,45 @@
 import tensorflow as tf
 import numpy as np
 
-
 def check_list_and_convert(the_object):
     if isinstance(the_object, list):
         return the_object
     return [the_object]
-
 
 class TfMap:
     """ a container for inputs, outputs, and loss in a tf graph. This object exists only
     to make well-defined the tf inputs, outputs, and losses used in the policy_opt_tf class."""
 
     def __init__(self, input_tensor, target_output_tensor,
-                 precision_tensor, output_op, loss_op, fp=None):
+                 precision_tensor, output_op, loss_op, fp=None, policy_type=None):
+        if policy_type:
+            assert policy_type in ['gmm', 'vae'], 'policy_type:{policy_type} not in [gmm, vae]'
         self.input_tensor = input_tensor
         self.target_output_tensor = target_output_tensor
         self.precision_tensor = precision_tensor
-        self.output_op = output_op
+        self.policy_type = policy_type
+        if policy_type=="gmm":
+            self.output_op = output_op
+            self.weight_op = output_op[0]
+            self.mean_op = output_op[1]
+            self.pre_op = output_op[2]
+        elif policy_type=="vae":
+            self.output_op = output_op
+            self.mean_op = output_op[0]
+            self.sigma_op = output_op[1]
+        else:
+            self.output_op = output_op[0]
         self.loss_op = loss_op
         self.img_feat_op = fp
 
     @classmethod
-    def init_from_lists(cls, inputs, outputs, loss, fp=None):
+    def init_from_lists(cls, inputs, outputs, loss, fp=None, policy_type=None):
         inputs = check_list_and_convert(inputs)
         outputs = check_list_and_convert(outputs)
         loss = check_list_and_convert(loss)
         if len(inputs) < 3:  # pad for the constructor if needed.
             inputs += [None]*(3 - len(inputs))
-        return cls(inputs[0], inputs[1], inputs[2], outputs[0], loss[0], fp=fp)
+        return cls(inputs[0], inputs[1], inputs[2], outputs, loss[0], fp=fp, policy_type=policy_type)
 
     def get_input_tensor(self):
         return self.input_tensor
@@ -42,13 +53,29 @@ class TfMap:
     def set_target_output_tensor(self, target_output_tensor):
         self.target_output_tensor = target_output_tensor
 
+    def get_policy_type(self):
+        return self.policy_type
+
     def get_precision_tensor(self):
         return self.precision_tensor
 
     def set_precision_tensor(self, precision_tensor):
         self.precision_tensor = precision_tensor
+    
+    def get_mean_op(self):
+        return self.mean_op
+
+    def get_weight_op(self):
+        return self.weight_op
+    
+    def get_pre_op(self):
+        return self.pre_op
 
     def get_output_op(self):
+        if self.policy_type=="gmm":
+            return [self.weight_op, self.mean_op]
+        if self.policy_type=="vae":
+            return self.mean_op
         return self.output_op
 
     def get_feature_op(self):
