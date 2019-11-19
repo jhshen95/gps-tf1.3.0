@@ -3,6 +3,7 @@ import os
 os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 import matplotlib as mpl
 mpl.use('Qt4Agg')
+#c
 
 import logging
 import imp
