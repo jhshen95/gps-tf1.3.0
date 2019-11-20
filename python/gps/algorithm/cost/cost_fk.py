@@ -9,7 +9,9 @@ from gps.algorithm.cost.cost_utils import get_ramp_multiplier
 from gps.proto.gps_pb2 import JOINT_ANGLES, END_EFFECTOR_POINTS, \
         END_EFFECTOR_POINT_JACOBIANS
 
-
+def Euc(var):
+    distance = np.sum(pow(var, 2), axis=0)
+    return distance
 class CostFK(Cost):
     """
     Forward kinematics cost function. Used for costs involving the end
@@ -50,7 +52,14 @@ class CostFK(Cost):
         # Choose target.
         tgt = self._hyperparams['target_end_effector']
         pt = sample.get(END_EFFECTOR_POINTS)
-        dist = pt - tgt
+        all_dist = np.array([np.array(pt-tgt[0]), np.array(pt-tgt[1]), np.array(pt-tgt[2]), np.array(pt-tgt[3])])
+        dist = []
+        for i in range(pt.shape[0]):
+            all_euc_dist = np.array([Euc(all_dist[0][i]), Euc(all_dist[1][i]),
+                                    Euc(all_dist[2][i]), Euc(all_dist[3][i])])
+            min_index = np.argmin(all_euc_dist, axis=0)
+            dist.append(all_dist[min_index][i])
+        dist = np.array(dist)
         # TODO - These should be partially zeros so we're not double
         #        counting.
         #        (see pts_jacobian_only in matlab costinfos code)

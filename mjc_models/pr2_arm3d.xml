@@ -104,20 +104,32 @@
             <geom name="fl" rgba="0.2 0.2 0.2 1" type="box" size="0.2 0.2 0.05" contype="1" conaffinity="1" />
         </body>
 
-        <body name="w1" pos="0.216 0.3 -0.45">
-            <geom name="w1" rgba="0.2 0.2 0.2 1" type="box" size="0.183 0.3 0.05" contype="1" conaffinity="1" />
+        <body name="w1" pos="0.304 0.3 -0.45">
+            <geom name="w1" rgba="0.2 0.2 0.2 1" type="box" size="0.095 0.3 0.05" contype="1" conaffinity="1" />
         </body>
 
-        <body name="w2" pos="-0.216 0.3 -0.45">
-            <geom name="w2" rgba="0.2 0.2 0.2 1" type="box" size="0.183 0.3 0.05" contype="1" conaffinity="1" />
+        <body name="w2" pos="-0.304 0.3 -0.45">
+            <geom name="w2" rgba="0.2 0.2 0.2 1" type="box" size="0.095 0.3 0.05" contype="1" conaffinity="1" />
         </body>
 
-        <body name="w3" pos="0.0 0.516 -0.45">
-            <geom name="w3" rgba="0.2 0.2 0.2 1" type="box" size="0.032 0.183 0.05" contype="1" conaffinity="1" />
+        <body name="w3" pos="0.0 0.525 -0.45">
+            <geom name="w3" rgba="0.2 0.2 0.2 1" type="box" size="0.209 0.075 0.05" contype="1" conaffinity="1" />
+        </body>
+
+        <body name="w4" pos="0.0 0.075 -0.45">
+            <geom name="w4" rgba="0.2 0.2 0.2 1" type="box" size="0.209 0.075 0.05" contype="1" conaffinity="1" />
         </body>
         
-        <body name="w4" pos="0.0 0.084 -0.45">
-            <geom name="w4" rgba="0.2 0.2 0.2 1" type="box" size="0.032 0.183 0.05" contype="1" conaffinity="1" />
+        <body name="center_piece" pos="0.0 0.3 -0.45">
+            <geom name="w5" rgba="0.2 0.2 0.2 1" type="box" size="0.209 0.08 0.05" contype="1" conaffinity="1" />
+        </body>
+
+        <body name="w6" pos="0.0 0.415 -0.45">
+            <geom name="w6" rgba="0.2 0.2 0.2 1" type="box" size="0.139 0.035 0.05" contype="1" conaffinity="1" />
+        </body>
+
+        <body name="w7" pos="0.0 0.185 -0.45">
+            <geom name="w7" rgba="0.2 0.2 0.2 1" type="box" size="0.139 0.035 0.05" contype="1" conaffinity="1" />
         </body>
     </worldbody>
 
