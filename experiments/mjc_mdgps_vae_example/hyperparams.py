@@ -106,7 +106,11 @@ torque_cost = {
 
 fk_cost = {
     'type': CostFK,
-    'target_end_effector': np.array([0.0, 0.3, -0.5, 0.0, 0.3, -0.2]),
+    'target_end_effector': np.array(
+        (np.array([-0.174, 0.185, -0.5, -0.174, 0.185, -0.2]),
+         np.array([0.174, 0.185, -0.5, 0.174, 0.185, -0.2]),
+         np.array([0.174, 0.415, -0.5, 0.174, 0.415, -0.2]),
+         np.array([-0.174, 0.415, -0.5, -0.174, 0.415, -0.2]))),
     'wp': np.array([2, 2, 1, 2, 2, 1]),
     'l1': 0.1,
     'l2': 10.0,
@@ -178,7 +182,7 @@ config = {
     'verbose_policy_trials': 1,
     'common': common,
     'agent': agent,
-    'gui_on': False,
+    'gui_on': True,
     'algorithm': algorithm,
 }
 
