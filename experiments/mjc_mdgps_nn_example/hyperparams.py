@@ -178,7 +178,7 @@ config = {
     'verbose_policy_trials': 1,
     'common': common,
     'agent': agent,
-    'gui_on': False,
+    'gui_on': True,
     'algorithm': algorithm,
 }
 
