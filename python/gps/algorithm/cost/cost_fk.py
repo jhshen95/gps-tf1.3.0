@@ -50,7 +50,18 @@ class CostFK(Cost):
         # Choose target.
         tgt = self._hyperparams['target_end_effector']
         pt = sample.get(END_EFFECTOR_POINTS)
-        dist = pt - tgt
+        dist_shape = pt.shape
+        if tgt.ndim>1:
+            #multi-goal, expand pt in goal dimension and tgt in time dimension for broadcast
+            pt = np.expand_dims(pt, axis=0)
+            tgt = np.expand_dims(tgt, axis=1)
+            dist = pt - tgt #goals*time*dX
+            goal_idx = np.argmin(np.sum(np.power(dist, 2), axis=-1), axis=0)
+            dist = dist[goal_idx, range(T)]
+        else:
+            dist = pt - tgt
+        assert dist.shape == dist_shape
+
         # TODO - These should be partially zeros so we're not double
         #        counting.
         #        (see pts_jacobian_only in matlab costinfos code)

@@ -41,7 +41,7 @@ SENSOR_DIMS = {
 PR2_GAINS = np.array([3.09, 1.08, 0.393, 0.674, 0.111, 0.152, 0.098])
 
 BASE_DIR = '/'.join(str.split(gps_filepath, '/')[:-2])
-EXP_DIR = BASE_DIR + '/../experiments/mjc_mdgps_nn_example/'
+EXP_DIR = BASE_DIR + '/../experiments/mdgps_single_vae/'
 
 
 common = {
@@ -155,7 +155,7 @@ if ALGORITHM_NN_LIBRARY == "tf":
         },
         'weights_file_prefix': EXP_DIR + 'policy',
         'iterations': 3000,
-        'network_model': tf_network
+        'network_model': tf_vae_network
     }
 elif ALGORITHM_NN_LIBRARY == "caffe":
     algorithm['policy_opt'] = {
@@ -178,7 +178,7 @@ config = {
     'verbose_policy_trials': 1,
     'common': common,
     'agent': agent,
-    'gui_on': True,
+    'gui_on': False,
     'algorithm': algorithm,
 }
 
